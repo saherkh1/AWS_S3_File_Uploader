@@ -1,0 +1,119 @@
+﻿using Amazon;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using task.Models;
+
+namespace task.ViewModel
+{
+    public class AWSBucketUploadViewModel : INotifyPropertyChanged
+    {
+
+        private string _region;
+        private string _accessKey;
+        private string _secretAccessKey;
+        private string _bucketName;
+        private string _filePath;
+        private bool _connectionStatus;
+        private List<string> _regionOptions;
+        private string _selectedRegion;
+
+        public AWSBucketUploadViewModel()
+        {
+            // Populate region options
+            _regionOptions = new List<string>(RegionEndpoint.EnumerableAllRegions
+                .Select(r => r.SystemName));
+        }
+
+        public List<string> RegionOptions
+        {
+            get { return _regionOptions; }
+            set
+            {
+                _regionOptions = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string SelectedRegion
+        {
+            get { return _selectedRegion; }
+            set
+            {
+                _selectedRegion = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string AccessKey
+        {
+            get { return _accessKey; }
+            set
+            {
+                _accessKey = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string SecretAccessKey
+        {
+            get { return _secretAccessKey; }
+            set
+            {
+                _secretAccessKey = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string BucketName
+        {
+            get { return _bucketName; }
+            set
+            {
+                _bucketName = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string FilePath
+        {
+            get { return _filePath; }
+            set
+            {
+                _filePath = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool ConnectionStatus
+        {
+            get { return _connectionStatus; }
+            set
+            {
+                _connectionStatus = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public void CheckConnection()
+        {
+            var awsService = new AwsService(_region, _accessKey, _secretAccessKey);
+            ConnectionStatus = awsService.CheckConnection();
+        }
+
+        public void UploadFile()
+        {
+            var awsService = new AwsService(_region, _accessKey, _secretAccessKey);
+            awsService.UploadFile(_bucketName, _filePath);
+        }
+    }
+}

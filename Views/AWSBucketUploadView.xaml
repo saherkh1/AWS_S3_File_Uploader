@@ -1,0 +1,169 @@
+﻿<UserControl x:Class="AWSFileUploader.Views.AWSBucketUploadView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:VM="clr-namespace:AWSFileUploader.ViewModels"
+             xmlns:Convert="clr-namespace:AWSFileUploader.Converters"
+             mc:Ignorable="d"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             Background="White">
+    <UserControl.DataContext>
+        <VM:AWSBucketUploadViewModel />
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <ResourceDictionary>
+                <Convert:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/AWSFileUploader;component/Styles/MyStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"
+                              MinWidth="10" />
+            <ColumnDefinition Width="20*"
+                              MinWidth="20" />
+            <ColumnDefinition Width="1*"
+                              MinWidth="10" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5px" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="2px" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="1"
+              Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            
+            <Label Grid.Row="0"
+                   Grid.Column="0"
+                   Content="Region:"
+                   Style="{StaticResource CustomLabelStyle}" />
+            <ComboBox Grid.Row="0"
+                      Grid.Column="1"
+                      ItemsSource="{Binding RegionOptions}"
+                      SelectedItem="{Binding SelectedRegion}"
+                      Style="{StaticResource CustomComboBoxStyle}" />
+            <Label Grid.Row="1"
+                   Grid.Column="0"
+                   Content="Access Key:"
+                   Style="{StaticResource CustomLabelStyle}" />
+            <TextBox Grid.Row="1"
+                     Grid.Column="1"
+                     Text="{Binding AccessKey}"
+                     Style="{StaticResource CustomTextBoxStyle}" />
+            <Label Grid.Row="2"
+                   Grid.Column="0"
+                   Content="Secret Access Key:"
+                   Style="{StaticResource CustomLabelStyle}" />
+            <TextBox Grid.Row="2"
+                     Grid.Column="1"
+                     Text="{Binding SecretAccessKey}"
+                     Style="{StaticResource CustomTextBoxStyle}" />
+            <Button Grid.Row="3"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Content="Check Connection"
+                    Command="{Binding CheckConnectionCommand}"
+                    Style="{StaticResource CustomButtonStyle}" />
+            <CheckBox Grid.Row="3"
+                      Grid.Column="0"
+                      Grid.ColumnSpan="2"
+                      Content="Save Access Keys locally "
+                      IsChecked="{Binding SaveDataLocally}"
+                      HorizontalAlignment="Left"
+                      Style="{StaticResource CustomCheckBoxStyle}" />
+            <Label Grid.Row="4"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="2"
+                   Content="Connection Status:"
+                   Style="{StaticResource CustomLabelStyle}" />
+            <Label Grid.Row="4"
+                   Grid.Column="1"
+                   Content="{Binding ConnectionStatus}"
+                   Style="{StaticResource CustomLabelStyle}" />
+            <Label Grid.Row="5"
+                   Grid.Column="0"
+                   Content="Bucket Name:"
+                   Style="{StaticResource CustomLabelStyle}" />
+            <TextBox Grid.Row="5"
+                     Grid.Column="1"
+                     Text="{Binding BucketName}"
+                     Style="{StaticResource CustomTextBoxStyle}" />
+            <Label Grid.Row="6"
+                   Grid.Column="0"
+                   Content="Select File:"
+                   Style="{StaticResource CustomLabelStyle}" />
+            <TextBlock Grid.Row="6"
+                       Grid.Column="1"
+                       Text="{Binding FilePath}" />
+            <Button Grid.Row="7"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Content="Browse"
+                    Command="{Binding BrowseFileCommand}"
+                    Style="{StaticResource CustomButtonStyle}" />
+            <Button Grid.Row="8"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Content="Upload File"
+                    Command="{Binding UploadFileCommand}"
+                    Style="{StaticResource CustomButtonStyle}" />
+            <!-- Progress Bar -->
+            <ProgressBar Grid.Row="9"
+                         Grid.Column="0"
+                         Grid.ColumnSpan="2"
+                         Height="20"
+                         Value="{Binding UploadProgress}"
+                         Minimum="0"
+                         Maximum="100"
+                         Visibility="{Binding IsUploading, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            <Label Grid.Row="9"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="2"
+                   Content="Uploading..."
+                   HorizontalContentAlignment="Center"
+                   VerticalContentAlignment="Center"
+                   Visibility="{Binding IsUploading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                   Style="{StaticResource CustomLabelStyle}" />
+            <Label Grid.Row="10"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="2"
+                   FontSize="15"
+                   Content="1. Click on the 'Browse' button to choose the file you want to upload.
+                   &#x0a;2. Enter the name of the bucket where you want to upload the file. 
+                   &#x0a;    You can also include a folder name by appending it to the file name
+                   &#x0a;    (e.g., 'BuketName/FolderName').
+                   &#x0a;3. Click on the ''Check Connection' button to verify the connection to the AWS service.
+                   &#x0a;    This step ensures that the app can communicate with the AWS S3 service.
+                   &#x0a;4. Click on the 'Upload File' button to initiate the file upload process.
+                   &#x0a; * Note: The Access Keys are stored in the app's configuration file.
+                    "
+                   HorizontalContentAlignment="Left"
+                   VerticalContentAlignment="Top"
+                   Style="{StaticResource CustomLabelStyle}" />
+            
+        </Grid>
+    </Grid>
+</UserControl>
